@@ -97,6 +97,7 @@ submitBtn.addEventListener('click', function (e) {
     // if data is available then we will create another object and oush it to array then set the whole array to localstorage
     if (adoptData) {
         console.log('first condition');
+        // adopdata is a array of object here
 
         adoptData.push(RemindObj);
         localStorage.setItem('mydata', JSON.stringify(adoptData))
@@ -131,8 +132,19 @@ submitBtn.addEventListener('click', function (e) {
 // })
 
 // test
+function tConvert(time) {
+    // Check correct time format and split into components
+    time = time.toString().match(/^([01]\d|2[0-3])(:)([0-5]\d)(:[0-5]\d)?$/) || [time];
 
-$(document).ready(function () {
+    if (time.length > 1) { // If time format correct
+        time = time.slice(1);  // Remove full string match value
+        time[5] = +time[0] < 12 ? 'AM' : 'PM'; // Set AM/PM
+        time[0] = +time[0] % 12 || 12; // Adjust hours
+    }
+    return time.join(''); // return adjusted time or original string
+}
+
+$((function () {
 
 
     var browserName = bowser.getParser(navigator.userAgent).getResult().browser.name;
@@ -200,36 +212,51 @@ $(document).ready(function () {
 
 
     // console.log(JSON.parse(localStorage.getItem('mydata')));
-    adoptData.forEach(element => {
 
-        // object array er date gula re date object e convert from string
+
+    adoptData.forEach(element => {
+        // object array er examdate gula re date object e convert from string
         var examDate = new Date(element.date);
         // current date object subtract to notify date
-        var notifDate = examDate;
-        notifDate.setDate(notifDate.getDate() - element.notify);
+        var notifDate = new Date(examDate.getTime())
+        // console.log(typeof notifDate);
+        notifDate = notifDate.setDate(notifDate.getDate() - element.notify);
+        // console.log(examDate);
 
-        console.log(todayDate.getTime() + " " + notifDate.getTime());
+        // console.log(notifDate);
+        // console.log(element.date);
+        console.log(tConvert(element.time));
+
+
+
+        // console.log(todayDate.getTime() + " " + notifDate);
+
+        // format the string time to 12 hour Am/pm time
+
+
+
         // current notice functionality
-        if (todayDate.getTime() >= notifDate.getTime() && todayDate.getTime() < examDate.getTime()) {
+        if (todayDate.getTime() >= notifDate && todayDate.getTime() < examDate.getTime()) {
 
-            var noticeDiv = `<div class="card-body">
-			Title: ${element.title}, Topic : ${element.desc}<br>
-            Date: ${element.date} , Time: ${element.time}
+            var timeLeft = examDate.getTime() - todayDate.getTime();
+            days = (timeLeft / (60 * 60 * 24 * 1000))
 
-		</div>`
-            $(noticeDiv).appendTo(remindDiv)
-            // alert('Today you have' + element.title + 'ace')
-            // console.log('date:' + element.date + 'title:' + element.title + '-time-' + element.time + '-description-' + element.desc + '-notification:-' + element.notify)
+            console.log(days + ' day(s) remaining');
+
+
+
         }
         else if (todayDate.getTime() == examDate.getTime()) {
             //  modal + div bar 
+            var noticeDiv = `<div class="card-body text-light">
+        	Title: ${element.title},Time: ${tConvert(element.time)}
+            </div>`
+            $(noticeDiv).appendTo('.examRemind')
         }
 
 
     });
-});
-
-
+}));
 
 
 
