@@ -149,58 +149,75 @@ function tConvert(time) {
     return time.join(''); // return adjusted time or original string
 }
 var updateModal = function (clickIndex) {
-    alert(clickIndex[title]);
-
-
-    // $(`<div >hellosdksjksjdkjskdjs</div>`)
-    //     $(`  <div class="modaldiv">
-    //     <h3 class="text-center">🔔 Set Your Reminder 🔔</h3>
-
-
-
-    //     <label>Title</label>
-    //     <input id="title" class="form-control" type="text" value ="${clickIndex.title}">
+    console.log(submitBtn);
 
 
 
 
+    console.log(adoptData[clickIndex]);
 
-    //     <label for="password1">Select Date</label>
-    //     <input id="date" class="form-control" type="date">
-
-
-    //     <label for="password1">Select Time</label>
-    //     <input id="time" class="form-control" type="time">
+    $(`  <div class="modaldiv">
+        <h3 class="text-center">🔔 Edit Your Reminder 🔔</h3>
 
 
 
-
-    //     <label for="password1">Description</label>
-    //     <textarea class="form-control" id="description" rows="2"
-    //         placeholder="write something..."></textarea>
-
-
-
-    //     <label for="password1">Set Notification</label>
-    //     <input type="number" class="form-control" id="number" min="1" max="100"
-    //         placeholder="set remaining day number">
+        <label>Title</label>
+        <input id="title" class="form-control" type="text" value ="${adoptData[clickIndex].title}">
 
 
 
 
 
+        <label for="password1">Select Date</label>
+        <input id="date" class="form-control" type="date" value ="${adoptData[clickIndex].date}">
+
+
+        <label for="password1">Select Time</label>
+        <input id="time" class="form-control" type="time" value ="${adoptData[clickIndex].time}">
+
+
+
+
+        <label for="password1">Description</label>
+        <textarea class="form-control" id="description" rows="2" 
+            placeholder="write something...">${adoptData[clickIndex].desc}</textarea>
+
+
+
+        <label for="password1">Set Notification</label>
+        <input type="number" class="form-control" id="number" min="1" max="100" value ="${adoptData[clickIndex].notify}"
+            placeholder="set remaining day number">
 
 
 
 
 
 
-    //     <div class=" border-top-0 d-flex mt-5 justify-content-center">
-    //         <button type="submit" class="btn btn-success btn-lg" id="submitBtn">Submit</button>
-    //     </div>
-    //     <a href="" class="close"><i class="fa fa-window-close" aria-hidden="true"></i></a>
 
-    // </div>`)
+
+
+
+
+        <div class=" border-top-0 d-flex mt-5 justify-content-center">
+            <button type="submit" class="btn btn-success btn-lg" id="submitBtn">Submit</button>
+        </div>
+        <a href="" class="close"><i class="fa fa-window-close" aria-hidden="true"></i></a>
+
+    </div>`).appendTo('body')
+
+    // submitBtn.addEventListener('click', function (e) {
+    //     e.preventDefault()
+    //     RemindObj = {
+    //         'title': remindTitle.value,
+    //         'date': remindDate.value,
+    //         'time': remindTime.value,
+    //         'desc': remindDesc.value,
+    //         'notify': remindNum.value
+    //     }
+    //     localStorage.setItem('reminderList', JSON.stringify([adoptData[clickIndex].RemindObj]))
+
+
+    // })
 
 }
 
