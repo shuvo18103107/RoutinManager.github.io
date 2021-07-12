@@ -1,4 +1,4 @@
-var adoptData = JSON.parse(localStorage.getItem('mydata'));
+var adoptData = JSON.parse(localStorage.getItem('reminderList'));
 
 let days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 // initiate layout and plugins
@@ -27,7 +27,10 @@ let textTitle = document.getElementById("page-title");
 textTitle.innerHTML = "Today is " + today + ", Time is: " + timeNow;
 
 if (localStorage.getItem("date") != d.toDateString()) {
+    var reminderList = localStorage.getItem('reminderList');
     localStorage.clear();
+    localStorage.setItem('reminderList', reminderList);
+
 }
 
 localStorage.setItem("date", d.toDateString());
@@ -80,12 +83,14 @@ closeBtn.addEventListener('click', function (e) {
 
 
 })
+
+
 // var adoptData = JSON.parse(localStorage.getItem('mydata'));
 
 submitBtn.addEventListener('click', function (e) {
     e.preventDefault();
     // at first check if localstorage has any data or not
-    adoptData = JSON.parse(localStorage.getItem('mydata'));
+    adoptData = JSON.parse(localStorage.getItem('reminderList'));
     RemindObj = {
         'title': remindTitle.value,
         'date': remindDate.value,
@@ -100,14 +105,14 @@ submitBtn.addEventListener('click', function (e) {
         // adopdata is a array of object here
 
         adoptData.push(RemindObj);
-        localStorage.setItem('mydata', JSON.stringify(adoptData))
+        localStorage.setItem('reminderList', JSON.stringify(adoptData))
     }
     // if not then also same functionality
     else {
         console.log('second condition');
 
         // localArray.push(RemindObj);
-        localStorage.setItem('mydata', JSON.stringify([RemindObj]))
+        localStorage.setItem('reminderList', JSON.stringify([RemindObj]))
 
     }
 
@@ -142,6 +147,61 @@ function tConvert(time) {
         time[0] = +time[0] % 12 || 12; // Adjust hours
     }
     return time.join(''); // return adjusted time or original string
+}
+var updateModal = function (clickIndex) {
+    alert(clickIndex[title]);
+
+
+    // $(`<div >hellosdksjksjdkjskdjs</div>`)
+    //     $(`  <div class="modaldiv">
+    //     <h3 class="text-center">🔔 Set Your Reminder 🔔</h3>
+
+
+
+    //     <label>Title</label>
+    //     <input id="title" class="form-control" type="text" value ="${clickIndex.title}">
+
+
+
+
+
+    //     <label for="password1">Select Date</label>
+    //     <input id="date" class="form-control" type="date">
+
+
+    //     <label for="password1">Select Time</label>
+    //     <input id="time" class="form-control" type="time">
+
+
+
+
+    //     <label for="password1">Description</label>
+    //     <textarea class="form-control" id="description" rows="2"
+    //         placeholder="write something..."></textarea>
+
+
+
+    //     <label for="password1">Set Notification</label>
+    //     <input type="number" class="form-control" id="number" min="1" max="100"
+    //         placeholder="set remaining day number">
+
+
+
+
+
+
+
+
+
+
+
+    //     <div class=" border-top-0 d-flex mt-5 justify-content-center">
+    //         <button type="submit" class="btn btn-success btn-lg" id="submitBtn">Submit</button>
+    //     </div>
+    //     <a href="" class="close"><i class="fa fa-window-close" aria-hidden="true"></i></a>
+
+    // </div>`)
+
 }
 
 $((function () {
@@ -214,7 +274,13 @@ $((function () {
     // console.log(JSON.parse(localStorage.getItem('mydata')));
 
 
-    adoptData.forEach(element => {
+
+
+    adoptData.forEach(function (element, i) {
+
+
+        console.log(i);
+
         // object array er examdate gula re date object e convert from string
         var examDate = new Date(element.date);
         // current date object subtract to notify date
@@ -225,8 +291,8 @@ $((function () {
 
         // console.log(notifDate);
         // console.log(element.date);
-        console.log(tConvert(element.time));
-
+        // console.log(tConvert(element.time));
+        // console.log(JSON.parse(localStorage.getItem('reminderList')).id);
 
 
         // console.log(todayDate.getTime() + " " + notifDate);
@@ -235,24 +301,95 @@ $((function () {
 
 
 
+
         // current notice functionality
         if (todayDate.getTime() >= notifDate && todayDate.getTime() < examDate.getTime()) {
 
+
+
+
             var timeLeft = examDate.getTime() - todayDate.getTime();
             days = (timeLeft / (60 * 60 * 24 * 1000))
+
+            var notificationDiv = `
+            
+            <div class="row col-12 reminderNotice list container  ml-2 mt-2 "  id="${i}" onclick = updateModal(${i})
+            >
+
+
+       
+            
+            <div class="col-6 m-auto p-0 wrapText">
+  <span>📝 ${element.title}<span>
+
+  </div>
+  <div class="col-6 m-auto p-0 wrapText">
+  <span>🔔 ${days} day left <span>
+
+  </div>
+  </div>`
+
+            $(notificationDiv).appendTo('.wrapperNotifi')
+
+            // var listid = document.querySelector('.list');
+            // console.log(listid);
+            // listid.addEventListener('click', updateModal()
+
+            // )
+
 
             console.log(days + ' day(s) remaining');
 
 
 
         }
+        // current exam reminder functionality
         else if (todayDate.getTime() == examDate.getTime()) {
             //  modal + div bar 
-            var noticeDiv = `<div class="card-body text-light">
-        	Title: ${element.title},Time: ${tConvert(element.time)}
-            </div>`
-            $(noticeDiv).appendTo('.examRemind')
+            var examReminder = ` 
+            
+            <div class="container col-12 row list examRemind ml-2 mt-2 "
+           >
+
+
+
+                                  
+            
+            <div class="col-6 p-0 m-auto wrapText ">
+ <span>📝${element.title}<span>
+
+ </div>
+
+ <div class="col-6 p-0 m-auto wrapText ">
+ <span>🕒 ${tConvert(element.time)}<span>
+
+ </div>
+ </div>
+ 
+ `
+
+
+
+
+
+
+            $(examReminder).appendTo('.wrapperExam')
+
+            // var listid = document.querySelector('.list');
+            // console.log(listid);
+            // listid.addEventListener('click', function () {
+            //     console.log('hi' + );
+            // }
+            // )
+
         }
+
+
+
+
+
+
+
 
 
     });
