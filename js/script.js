@@ -34,7 +34,7 @@ if (localStorage.getItem("date") != d.toDateString()) {
 }
 
 localStorage.setItem("date", d.toDateString());
-
+var oldNoticeIds = [];
 let tableData = document.querySelectorAll(".gradeX");
 let tableHead = document.querySelectorAll("#sample_1")[0];
 let upcomingContext = document.querySelector("#upcoming");
@@ -52,9 +52,12 @@ let remind = document.getElementById('remind');
 let modaldiv = document.querySelector('.modaldiv');
 let overlay = document.querySelector('.overlay');
 let closeBtn = document.querySelector('.close');
+let closeConfirm = document.getElementById('closeConfirm');
 let remindDiv = document.querySelector('.reminderNotice');
-
-
+let yesBtn = document.getElementById('yesBtn');
+let noBtn = document.getElementById('noBtn');
+let upComing = document.getElementById('upcomingNotice');
+let oldNoticeBtn = document.getElementById('toogleNotice');
 let RemindObj;
 var adoptData;
 // localStorage.setItem("title")
@@ -84,19 +87,107 @@ closeBtn.addEventListener('click', function (e) {
 
 })
 
+// reset all 
+var resetAll = function () {
+    localStorage.removeItem('reminderList')
+    //BUG
+    createCards(false, true)
+
+}
+closeConfirm.addEventListener('click', function (e) {
+    e.preventDefault();
+
+    $('.confirmModal').addClass('hideModal')
+    overlay.classList.add('hideModal')
+
+
+
+})
+noBtn.addEventListener('click', function (e) {
+    e.preventDefault();
+
+    $('.confirmModal').addClass('hideModal')
+    overlay.classList.add('hideModal')
+
+
+
+})
+
+// delete Modal functionality 
+var deleteModal = function (deleteIndex) {
+
+
+    // confirmation modal
+    $('.confirmModal').removeClass('hideModal');
+    overlay.classList.remove('hideModal')
+    yesBtn.addEventListener('click', function () {
+
+        $('.confirmModal').addClass('hideModal')
+        overlay.classList.add('hideModal')
+        adoptData = JSON.parse(localStorage.getItem('reminderList'));
+        adoptData = adoptData.filter((item, i) => i !== deleteIndex);
+        localStorage.setItem('reminderList', JSON.stringify(adoptData))
+        createCards(false, false);
+
+
+    })
+    // $('.modal').hide();
+}
+
+// clear all old notifications 
+clearAll.addEventListener('click', function () {
+
+    adoptData = JSON.parse(localStorage.getItem('reminderList'));
+
+    // arr1.filter((item, i) => !arr2.includes(i));
+    adoptData = adoptData.filter((item, i) => !oldNoticeIds.includes(i));
+    console.log(adoptData);
+
+
+
+    // oldNoticeIds.forEach(function (v, i) {
+    //     adoptData = adoptData.filter((item, i) => i !== i);
+
+
+
+    // })
+    localStorage.setItem('reminderList', JSON.stringify(adoptData))
+    createCards(true, true);
+
+})
+
+
+
+
+
 // card create 
 
-var createCards = function () {
-
+var createCards = function (decision, decision2) {
+    oldNoticeIds = [];
 
     $('.wrapperNotifi').empty();
     $('.wrapperExam').empty();
+    if (decision2 == true) {
+        $('#clearAll').removeClass('hideModal');
+        upComing.textContent = ' ';
+        upComing.textContent = '🔔 Old Notices 🔔';
+        oldNoticeBtn.textContent = ' ';
+        oldNoticeBtn.textContent = 'Upcoming Notices';
+
+        var funcDef = $('#oldNoticebtn').attr('onclick');
+        // console.log(funcDef)
+        var params = funcDef.split("createCards(")[1];
+        // console.log(params);
+        params = params.replace(', true)', '');
+        console.log(params);
+        // params = Boolean(params);
+        console.log(!params);
+        $('#oldNoticebtn').attr('onclick', `createCards(${params == 'true' ? 'false' : 'true'}, true)`);
+
+    }
 
     adoptData.forEach(function (element, i) {
-
-
         console.log(i);
-
         // object array er examdate gula re date object e convert from string
         var examDate = new Date(element.date);
         // current date object subtract to notify date
@@ -122,83 +213,137 @@ var createCards = function () {
         if (todayDate.getTime() >= notifDate && todayDate.getTime() < examDate.getTime()) {
 
 
+            if (decision == false) {
+                $('#clearAll').addClass('hideModal');
 
+                upComing.textContent = ' ';
+                upComing.textContent = '🔔 Upcoming Notices 🔔';
+                oldNoticeBtn.textContent = ' ';
+                oldNoticeBtn.textContent = 'Old Notices';
 
-            var timeLeft = examDate.getTime() - todayDate.getTime();
-            days = (timeLeft / (60 * 60 * 24 * 1000))
+                var timeLeft = examDate.getTime() - todayDate.getTime();
+                days = (timeLeft / (60 * 60 * 24 * 1000))
 
-            var notificationDiv = `
+                var notificationDiv = `
         
-        <div class="row col-12 reminderNotice list container  ml-2 mt-2 " data-toggle="modal" data-target="#exampleModal${i}"  id="${i}" onclick = updateModal(${i})>
-
-
-   
+                <div class="row col-12 reminderNotice list container  ml-2 mt-2 "  id="${i}">
         
-        <div class="col-6 m-auto p-0 wrapText">
-<span>📝 ${element.title}<span>
+            <div class="col-6 m-auto p-0 wrapText">
+    <span>📝 ${element.title}</span>
+    
+    </div>
+    <div class="col-3 m-auto p-0 ">
+    <span>🔔 ${days} day left </span>
+    
+    </div>
+    <div class="col-3 m-auto  ">
+    <i class="fa fa-trash-o mx-2" onclick = deleteModal(${i})></i>
+    <i class="fa fa-pencil mx-2 " data-toggle="modal" data-target="#exampleModal${i}"  onclick= updateModal(${i})></i>
+    </div>
+    </div>`
 
-</div>
-<div class="col-6 m-auto p-0 wrapText">
-<span>🔔 ${days} day left <span>
+                $(notificationDiv).appendTo('.wrapperNotifi')
 
-</div>
-</div>`
+                // var listid = document.querySelector('.list');
+                // console.log(listid);
+                // listid.addEventListener('click', updateModal()
 
-            $(notificationDiv).appendTo('.wrapperNotifi')
-
-            // var listid = document.querySelector('.list');
-            // console.log(listid);
-            // listid.addEventListener('click', updateModal()
-
-            // )
+                // )
+                console.log(days + ' day(s) remaining');
+            }
 
 
-            console.log(days + ' day(s) remaining');
 
 
 
         }
         // current exam reminder functionality
-        else if (todayDate.getTime() == examDate.getTime()) {
-            //  modal + div bar 
-            var examReminder = ` 
-        
-        <div class="container col-12 row list examRemind ml-2 mt-2 " data-toggle="modal" data-target="#exampleModal${i}"  onclick = updateModal(${i})
-       >
+
+        else {
+            if (todayDate.getTime() == examDate.getTime()) {
+
+
+                if (decision == false) {
+                    $('#clearAll').addClass('hideModal')
+
+                    //  modal + div bar 
+                    var examReminder = ` 
+            
+    <div class="container col-12 row list examRemind ml-2 mt-2 " >
+    
+        <div class="col-6 p-0 m-auto wrapText">
+    <span>📝${element.title}</span>
+    
+    </div>
+    
+    <div class="col-3 p-0 m-auto ">
+    <span>🕒 ${tConvert(element.time)}</span>
+    
+    </div>
+    <div class="col-3 m-auto ">
+    <i class="fa fa-trash-o mx-2" onclick = deleteModal(${i})></i>
+    <i class="fa fa-pencil mx-2 " data-toggle="modal" data-target="#exampleModal${i}" onclick = updateModal(${i})></i>
+    
+    </div>
+    
+    </div>
+    
+    `
+                    $(examReminder).appendTo('.wrapperExam')
+
+                    // var listid = document.querySelector('.list');
+                    // console.log(listid);
+                    // listid.addEventListener('click', function () {
+                    //     console.log('hi' + );
+                    // }
+                    // )
+                }
+
+
+            }
+
+            else {
+                oldNoticeIds.push(i)
+
+                if (decision == true) {
+                    // old notice functionality
 
 
 
-                              
-        
-        <div class="col-6 p-0 m-auto wrapText ">
-<span>📝${element.title}<span>
+                    var oldNotices = `
+                
+  <div class="row col-12 reminderNotice list container  ml-2 mt-2 "  id="${i}">
+  
+
+<div class="col-5 m-auto p-0 wrapText">
+<span>📝 ${element.title}</span>
 
 </div>
-
-<div class="col-6 p-0 m-auto wrapText ">
-<span>🕒 ${tConvert(element.time)}<span>
+<div class="col-4 m-auto p-0">
+<span>📅 ${element.date}  </span>
 
 </div>
+<div class="col-3 m-auto">
+<i class="fa fa-trash-o mx-2" onclick = deleteModal(${i})></i>
+<i class="fa fa-pencil mx-2 " data-toggle="modal" data-target="#exampleModal${i}"  onclick= updateModal(${i})></i>
 </div>
+</div>`
 
-`
+                    $(oldNotices).appendTo('.wrapperNotifi')
+                }
+
+            }
 
 
 
 
 
+            // old notice delete functionality
 
-            $(examReminder).appendTo('.wrapperExam')
 
-            // var listid = document.querySelector('.list');
-            // console.log(listid);
-            // listid.addEventListener('click', function () {
-            //     console.log('hi' + );
-            // }
-            // )
+
 
         }
-
 
 
 
@@ -243,7 +388,7 @@ submitBtn.addEventListener('click', function (e) {
     remindTime.value = "";
     remindDesc.value = "";
     remindNum.value = "";
-    createCards();
+    createCards(false, false);
 })
 
 // submitBtn.addEventListener('submit', function (e) {
@@ -272,14 +417,14 @@ function tConvert(time) {
 var updateModal = function (clickIndex) {
 
 
-    // console.log(adoptData[clickIndex]);
+
 
     $(`<!-- Modal -->
     <div class="modal fade" id="exampleModal${clickIndex}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
       <div class="modal-dialog" role="document">
         <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+          <div class="modal-header justify-content-center">
+            <h5 class="modal-title" id="exampleModalLabel">✏️Edit Your Reminder✏️</h5>
             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
               <span aria-hidden="true">&times;</span>
             </button>
@@ -326,10 +471,13 @@ var updateModal = function (clickIndex) {
     
     `).appendTo('body')
 
+
+
+
+
     // console.log(adoptData[clickIndex]);
 
     // $('.modal').show();
-
     // modalBody.hide();
     var Subbtn = document.getElementById('submitButton')
     Subbtn.addEventListener('click', function (e) {
@@ -346,14 +494,24 @@ var updateModal = function (clickIndex) {
         adoptData[clickIndex] = RemindObj
         console.log(RemindObj);
         localStorage.setItem('reminderList', JSON.stringify(adoptData))
-
-        createCards();
-
+        //  FIXME
+        //  old notice edit functionality bug
+        createCards(false, false);
 
 
     })
 
+
+
 }
+
+
+
+// console.log(adoptData[clickIndex]);
+
+
+
+
 
 $((function () {
 
@@ -426,7 +584,7 @@ $((function () {
 
     // card made function
 
-    createCards();
+    createCards(false, false);
 
 
 }));

@@ -56,6 +56,21 @@ input {
   box-shadow: 0 3rem 5rem rgba(0, 0, 0, 0.3);
   z-index: 10;
 }
+.confirmModal
+{
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 26%;
+  background-color: white;
+  padding: 3rem;
+  border-radius: 2em;
+  box-shadow: 0 3rem 5rem rgba(0, 0, 0, 0.3);
+  z-index: 10;
+}
+
+
 .close {
   position: absolute;
   top: 1.2rem;
@@ -111,7 +126,21 @@ background-color: #0f3369;
 .wrapText
 {
   word-break: break-all;
+
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  
 }
+.clear
+{
+ 
+  border-radius: 2em;
+  text-align: center;
+  background: darkturquoise;
+  cursor: pointer;
+}
+
 
 
 /* ----------------------------------------------

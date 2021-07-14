@@ -65,7 +65,7 @@
 
 
                         <button class="btn nav-link" onclick="classTime(filter(true));">
-                            <i class="sb-nav-link-icon fa fa-cogs"></i>
+                            <i class="sb-nav-link-icon fa fa-hourglass"></i>
 
 
                             Filter</button>
@@ -73,7 +73,8 @@
 
 
                         <button class="btn nav-link" onclick=" classTime(filter(false));">
-                            <i class="sb-nav-link-icon fa fa-cog"></i>
+                            <i class="sb-nav-link-icon 
+                           fa fa-paper-plane"></i>
 
 
 
@@ -90,7 +91,7 @@
                             Alarm</button>
 
                         <button class="btn nav-link">
-                            <i class="sb-nav-link-icon fa fa-cube"></i>
+                            <i class="sb-nav-link-icon fa fa-clock-o"></i>
                             Exam
                             Routine</button>
 
@@ -104,6 +105,12 @@
                             Set Reminder
                         </button>
 
+                        <button type="button" class="btn nav-link" id="oldNoticebtn" onclick="createCards(true, true)">
+                            <i class="sb-nav-link-icon fa fa-binoculars"></i>
+
+                            <span id="toogleNotice">Old Notices</span>
+                        </button>
+
 
 
 
@@ -111,8 +118,12 @@
                     </div>
                 </div>
                 <div class="sb-sidenav-footer">
-                    <div class="small">Logged in as:</div>
-                    Start Bootstrap
+
+                    <button type="button" class="btn nav-link text-info" id="resetButton" onclick="resetAll()">
+                        <i class="sb-nav-link-icon fa fa-repeat"></i>
+
+                        Reset All
+                    </button>
                 </div>
             </nav>
         </div>
@@ -350,8 +361,18 @@
                             </div>
                             <div class=" col-md-4 ">
                                 <!-- exam -->
-                                <div class="wrapperExam mb-5">
+                                <div class="examlist mb-2">
 
+                                    <div class="row col-12">
+                                        <div class="col-12 text-align-center">
+                                            <p class="font-weight-bold">📢 Current Notice 📢</p>
+                                        </div>
+
+                                    </div>
+
+                                    <div class="wrapperExam">
+
+                                    </div>
 
 
 
@@ -359,7 +380,19 @@
 
 
                                 <!-- notification -->
-                                <div class="wrapperNotifi ">
+                                <div class="notification ">
+                                    <div class="row col-12">
+                                        <div class="col-8 text-align-center">
+                                            <p class="font-weight-bold" id="upcomingNotice">🔔 Upcoming Notice 🔔</p>
+                                        </div>
+                                        <div class="col-4">
+                                            <p class="font-weight-bold clear hideModal text-light" id="clearAll">Clear
+                                                All</p>
+                                        </div>
+                                    </div>
+                                    <div class="wrapperNotifi">
+
+                                    </div>
 
 
 
@@ -426,7 +459,19 @@
                     </div>
                     <div class="overlay hideModal"></div>
 
+                    <div class=" confirmModal hideModal">
+                        <h6 class="text-center">⚠️ Are You Sure You Want to Delete?⚠️</h6>
 
+                        <div class=" border-top-0 d-flex mt-5 justify-content-center">
+
+
+                            <button class="btn btn-success rounded-pill  mx-1" id="yesBtn">Yes</button>
+                            <button class="btn btn-danger rounded-pill mx-1" id="noBtn">No</button>
+                        </div>
+                        <a href="#0" class="close" id="closeConfirm"><i class="fa fa-window-close"
+                                aria-hidden="true"></i></a>
+
+                    </div>
                     <!-- end modal -->
 
 
