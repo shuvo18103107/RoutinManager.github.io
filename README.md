@@ -1,7 +1,7 @@
 <h1 align="center"> 📝Routine Manager 📝</h1>
 This is a kind of fun project made by javascript which populates the routine and filters it according to the date and time.
 <br><br>
-check this out - https://shuvo18103107.github.io/Routin-Manager-Application.github.io/
+check this out -  https://shuvo18103107.github.io/RoutinManager.github.io/
 <br><br>
 
 It has - 
