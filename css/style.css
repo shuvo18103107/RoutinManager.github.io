@@ -178,3 +178,40 @@ background-color: #0f3369;
     transform: rotate(360deg);
   }
 }
+
+@media screen and (max-width: 1140px) {
+  .noticeDiv,.tableDiv
+  {
+    flex: 0 0 auto !important;
+    width: 100% !important;
+
+  }
+}
+.button:focus {
+  outline: 0 !important;
+}
+
+.buttonIn {
+  position: relative;
+}
+
+input {
+  margin: 0px;
+  padding: 0px;
+  width: 100%;
+  outline: none;
+  height: 30px;
+  border-radius: 5px;
+}
+
+.button {
+  position: absolute;
+  left: -26px;
+  z-index: 2;
+  border: none;
+  top: 4px;
+  height: 30px;
+  color: #981313;
+  background-color: transparent;
+  transform: translateX(2px);
+}

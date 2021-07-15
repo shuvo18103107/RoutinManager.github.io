@@ -39,7 +39,6 @@ let tableData = document.querySelectorAll(".gradeX");
 let tableHead = document.querySelectorAll("#sample_1")[0];
 let upcomingContext = document.querySelector("#upcoming");
 let counterContext = document.querySelector("#countdown");
-let alarmButton = document.getElementById('eventMan');
 let refreshButton = document.getElementById('creater');
 // set reminder code 
 let remindTitle = document.getElementById('title');
@@ -58,6 +57,7 @@ let yesBtn = document.getElementById('yesBtn');
 let noBtn = document.getElementById('noBtn');
 let upComing = document.getElementById('upcomingNotice');
 let oldNoticeBtn = document.getElementById('toogleNotice');
+let filterBtn = document.getElementById('filterBtn');
 let RemindObj;
 var adoptData;
 // localStorage.setItem("title")
@@ -89,9 +89,17 @@ closeBtn.addEventListener('click', function (e) {
 
 // reset all 
 var resetAll = function () {
-    localStorage.removeItem('reminderList')
-    //BUG
-    createCards(false, true)
+
+    localStorage.setItem('reminderList', "[]")
+
+    // createCards(false, false)
+    // upComing.textContent = '🔔 Upcoming Notices 🔔';
+
+    // oldNoticeBtn.textContent = 'Upcoming Notices';
+    // $('#clearAll').addClass('hideModal');
+    $('.wrapperNotifi').empty();
+    $('.wrapperExam').empty();
+
 
 }
 closeConfirm.addEventListener('click', function (e) {
@@ -169,9 +177,9 @@ var createCards = function (decision, decision2) {
     $('.wrapperExam').empty();
     if (decision2 == true) {
         $('#clearAll').removeClass('hideModal');
-        upComing.textContent = ' ';
+
         upComing.textContent = '🔔 Old Notices 🔔';
-        oldNoticeBtn.textContent = ' ';
+
         oldNoticeBtn.textContent = 'Upcoming Notices';
 
         var funcDef = $('#oldNoticebtn').attr('onclick');
@@ -185,8 +193,10 @@ var createCards = function (decision, decision2) {
         $('#oldNoticebtn').attr('onclick', `createCards(${params == 'true' ? 'false' : 'true'}, true)`);
 
     }
+    adoptData = JSON.parse(localStorage.getItem('reminderList'));
 
     adoptData.forEach(function (element, i) {
+
         console.log(i);
         // object array er examdate gula re date object e convert from string
         var examDate = new Date(element.date);
@@ -216,9 +226,9 @@ var createCards = function (decision, decision2) {
             if (decision == false) {
                 $('#clearAll').addClass('hideModal');
 
-                upComing.textContent = ' ';
+
                 upComing.textContent = '🔔 Upcoming Notices 🔔';
-                oldNoticeBtn.textContent = ' ';
+
                 oldNoticeBtn.textContent = 'Old Notices';
 
                 var timeLeft = examDate.getTime() - todayDate.getTime();
@@ -259,15 +269,15 @@ var createCards = function (decision, decision2) {
         }
         // current exam reminder functionality
 
-        else {
-            if (todayDate.getTime() == examDate.getTime()) {
+
+        if (todayDate.getTime() == examDate.getTime()) {
 
 
-                if (decision == false) {
-                    $('#clearAll').addClass('hideModal')
 
-                    //  modal + div bar 
-                    var examReminder = ` 
+
+
+            //  modal + div bar 
+            var examReminder = ` 
             
     <div class="container col-12 row list examRemind ml-2 mt-2 " >
     
@@ -289,28 +299,28 @@ var createCards = function (decision, decision2) {
     </div>
     
     `
-                    $(examReminder).appendTo('.wrapperExam')
+            $(examReminder).appendTo('.wrapperExam')
 
-                    // var listid = document.querySelector('.list');
-                    // console.log(listid);
-                    // listid.addEventListener('click', function () {
-                    //     console.log('hi' + );
-                    // }
-                    // )
-                }
-
-
-            }
-
-            else {
-                oldNoticeIds.push(i)
-
-                if (decision == true) {
-                    // old notice functionality
+            // var listid = document.querySelector('.list');
+            // console.log(listid);
+            // listid.addEventListener('click', function () {
+            //     console.log('hi' + );
+            // }
+            // )
 
 
 
-                    var oldNotices = `
+        }
+
+        if (todayDate.getTime() != examDate.getTime() && !(todayDate.getTime() >= notifDate && todayDate.getTime() < examDate.getTime())) {
+            oldNoticeIds.push(i)
+
+            if (decision == true) {
+                // old notice functionality
+
+
+
+                var oldNotices = `
                 
   <div class="row col-12 reminderNotice list container  ml-2 mt-2 "  id="${i}">
   
@@ -329,21 +339,21 @@ var createCards = function (decision, decision2) {
 </div>
 </div>`
 
-                    $(oldNotices).appendTo('.wrapperNotifi')
-                }
-
+                $(oldNotices).appendTo('.wrapperNotifi')
             }
 
-
-
-
-
-            // old notice delete functionality
-
-
-
-
         }
+
+
+
+
+
+        // old notice delete functionality
+
+
+
+
+
 
 
 
@@ -417,8 +427,9 @@ function tConvert(time) {
 var updateModal = function (clickIndex) {
 
 
+    adoptData = JSON.parse(localStorage.getItem('reminderList'));
 
-
+    console.log(clickIndex);
     $(`<!-- Modal -->
     <div class="modal fade" id="exampleModal${clickIndex}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
       <div class="modal-dialog" role="document">
@@ -472,14 +483,9 @@ var updateModal = function (clickIndex) {
     `).appendTo('body')
 
 
-
-
-
-    // console.log(adoptData[clickIndex]);
-
     // $('.modal').show();
     // modalBody.hide();
-    var Subbtn = document.getElementById('submitButton')
+    var Subbtn = document.querySelector(`#exampleModal${clickIndex} #submitButton`)
     Subbtn.addEventListener('click', function (e) {
         e.preventDefault()
         adoptData = JSON.parse(localStorage.getItem('reminderList'));
@@ -515,7 +521,7 @@ var updateModal = function (clickIndex) {
 
 $((function () {
 
-
+    filterBtn.click();
     var browserName = bowser.getParser(navigator.userAgent).getResult().browser.name;
     if (browserName == "Microsoft Edge") {
         $("a").each(function () {
@@ -552,7 +558,7 @@ $((function () {
 
     $("#myInput").on("keyup", function () {
         if (!$('.button').length) {
-            var $clearButton = $('<button id="clear" class="button"><i class="fa fa-times" aria-hidden="true"></i></button>');
+            var $clearButton = $('<button id="clear" class="button"></button>');
             $clearButton.insertAfter($("#myInput"));
 
             $('.button').click(function () {
@@ -589,7 +595,13 @@ $((function () {
 
 }));
 
-
+// filter search button function
+$("#filterNotice").on("keyup", function () {
+    var value = $(this).val().toLowerCase();
+    $(".list").filter(function () {
+        $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+    });
+});
 
 
 
@@ -616,10 +628,7 @@ function copyToClipboard(text) {
     }
 }
 
-alarmButton.addEventListener('click', function () {
-    alarm = true;
-    alarmer(alarm);
-});
+
 
 
 
@@ -638,33 +647,6 @@ window.setInterval(function () {
 
 classTime(filter(true));
 
-function alarmer(a) {
-
-    if (a) {
-        var button = alarmButton.innerHTML;
-        // alert(refreshButton.innerHTML);
-        if (refreshButton.innerHTML == '<button class="btn btn-warning mr-1 rounded font-weight-bold" id="eventMan">Set Alarm</button>') {
-            alarmButton.remove();
-            refreshButton.innerHTML = '<button class="btn text-center pl-4 pr-5 mr-3" onclick = "location.reload();"><i class="fa fa-refresh rotate-center" aria-hidden="true"></i></button>';
-        }
-        else {
-            alarmButton.remove();
-        }
-        for (let i = 0; i < idArr.length; i++) {
-            if (!tomorrowClicked) {
-                let countedDiff = getDifference(classHrMinFrmt[i], formatTwentyFour(formatAMPM(new Date())));
-                if (countedDiff <= 0 && countedDiff >= -15 && !skipped) {
-                    audio = document.getElementById("audio");
-                    audio.play();
-                    setTimeout(function () { location.reload(); }, 4300);
-                }
-            }
-        }
-    }
-    else {
-        if (!tomorrowClicked && !viewClicked) location.reload();
-    }
-}
 
 function filter(compDay) {
     viewClicked = false;
@@ -851,24 +833,7 @@ function classTime(arr = []) {
                 tableData[idArr[i] - 1].style.backgroundColor = "coral";
                 tableData[idArr[i] - 1].style.fontWeight = "bold";
 
-                alarmButton.addEventListener('click', function () {
-                    if (alarm && !skipped) {
-                        if (localStorage.getItem("currentClass") != tableData[idArr[i] - 1]["cells"][1].innerText) {
-                            localStorage.setItem("currentClass", (tableData[idArr[i] - 1]["cells"][1].innerText));
-                            if (localStorage.getItem("redirected") != 'ture') {
-                                localStorage.setItem("redirected", "true");
-                                setTimeout(function () { var win = window.open(selectedTable.href, "mypopup"); win.focus() }, 1000);
-                            } else {
-                                localStorage.setItem("redirected", "false");
-                            }
-                        }
-                        audio = document.getElementById("audio");
-                        audio.play();
-                        audio.stop();
-                    }
 
-                });
-                alarm = false;
             }
 
             if (countedDiff > 0 && counter == 0) {
