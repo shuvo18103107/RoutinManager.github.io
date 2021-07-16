@@ -1,18 +1,26 @@
-var adoptData = JSON.parse(localStorage.getItem('reminderList'));
+var adoptData = JSON.parse(localStorage.getItem("reminderList"));
 
-let days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+let days = [
+    "Sunday",
+    "Monday",
+    "Tuesday",
+    "Wednesday",
+    "Thursday",
+    "Friday",
+    "Saturday",
+];
 // initiate layout and plugins
 let d = new Date();
 let today = days[d.getDay()];
-let currentMonth = ("0" + (d.getMonth() + 1)).slice(-2)
-let currentDate = ("0" + d.getDate()).slice(-2)
+let currentMonth = ("0" + (d.getMonth() + 1)).slice(-2);
+let currentDate = ("0" + d.getDate()).slice(-2);
 let currentYear = d.getFullYear();
 let tomorrow = days[d.getDay() + 1];
 let timeNow = formatAMPM(d);
 let upcomingClassTime;
 let upcomingClass;
 let counterText;
-let blinker = ':';
+let blinker = ":";
 let unclicked = true;
 let danger = true;
 let alarm = false;
@@ -20,7 +28,7 @@ let skipped = false;
 let tomorrowClicked = false;
 let viewClicked = false;
 let filterClicked = false;
-let todayDate
+let todayDate;
 diffArr = [], classesDoneArr = [], courseArr = [], idArr = [], classHrMinFrmt = [];
 
 let textTitle = document.getElementById("page-title");
@@ -58,7 +66,6 @@ let upComing = document.getElementById("upcomingNotice");
 let oldNoticeBtn = document.getElementById("toogleNotice");
 let filterBtn = document.getElementById("filterBtn");
 let RemindObj;
-var adoptData;
 
 remind.addEventListener("click", function (e) {
     e.preventDefault();
@@ -92,6 +99,22 @@ noBtn.addEventListener("click", function (e) {
     $(".confirmModal").addClass("hideModal");
     overlay.classList.add("hideModal");
 });
+
+// colorize table while filtering
+function colorizeTable() {
+    tableData = document.querySelectorAll(".gradeX");
+    var i = 0;
+    tableData.forEach(function (item) {
+        if (item.style.display != "none") {
+            if (i % 2 == 0) { item.style.background = "#E6E6E6" }
+            else {
+                item.style.background = "transparent"
+            }
+            i++;
+        }
+    });
+    console.log('test')
+}
 
 // delete Modal functionality
 var deleteModal = function (deleteIndex) {
@@ -173,21 +196,19 @@ var createCards = function (decision, decision2) {
 
                 var timeLeft = examDate.getTime() - todayDate.getTime();
                 days = timeLeft / (60 * 60 * 24 * 1000);
-
                 var notificationDiv = `<div class="row col-12 reminderNotice list container  ml-2 mt-2 "  id="${i}">
 
-        <div class="col-6 m-auto p-0 wrapText">
-        <span>📝 ${element.title}</span>
-        </div>
-        <div class="col-3 m-auto p-0 ">
-        <span>🔔 ${days} day left </span>
-        </div>
-        <div class="col-3 m-auto">
-        <i class="fa fa-trash-o mx-2" onclick = deleteModal(${i})></i>
-        <i class="fa fa-pencil mx-2 " data-toggle="modal" data-target="#exampleModal${i}"  onclick= updateModal(${i})></i>
-        </div>
-        </div>`;
-
+                <div class="col-6 m-auto p-0 wrapText">
+                <span>📝 ${element.title}</span>
+                </div>
+                <div class="col-3 m-auto p-0 ">
+                <span>🔔 ${days} day left </span>
+                </div>
+                <div class="col-3 m-auto">
+                <i class="fa fa-trash-o mx-2" onclick = deleteModal(${i})></i>
+                <i class="fa fa-pencil mx-2 " data-toggle="modal" data-target="#exampleModal${i}"  onclick= updateModal(${i})></i>
+                </div>
+                </div>`;
                 $(notificationDiv).appendTo(".wrapperNotifi");
 
                 console.log(days + " day(s) remaining");
@@ -222,7 +243,7 @@ var createCards = function (decision, decision2) {
 
             if (decision == true) {
                 // old notice functionality
-                var oldNotices = `<div class="row col-12 reminderNotice list container  ml-2 mt-2 "  id="${i}"><div class="col-5 m-auto p-0 wrapText">
+                var oldNotices = `<div class="row col-12 reminderNotice text-left list container  ml-2 mt-2 "  id="${i}"><div class="col-5 m-auto p-0 wrapText">
         <span>📝 ${element.title}</span></div><div class="col-4 m-auto p-0">
         <span>📅 ${element.date}</span></div><div class="col-3 m-auto">
         <i class="fa fa-trash-o mx-2" onclick = deleteModal(${i})></i>
@@ -288,13 +309,21 @@ function tConvert(time) {
     }
     return time.join(""); // return adjusted time or original string
 }
+
+// stylize Clicked Btn
+$('.nav-link').click(
+    function () {
+        $('.nav-link').removeClass('clickedBtn');
+        $(this).addClass('clickedBtn');
+    })
+
 var updateModal = function (clickIndex) {
     adoptData = JSON.parse(localStorage.getItem("reminderList"));
 
     console.log(clickIndex);
     $(`<!-- Modal -->
     <div class="modal fade" id="exampleModal${clickIndex}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-      <div class="modal-dialog" role="document">
+      <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
           <div class="modal-header justify-content-center">
             <h5 class="modal-title" id="exampleModalLabel">✏️Edit Your Reminder✏️</h5>
@@ -395,6 +424,10 @@ $(function () {
                 });
                 $(".button").remove();
                 $("#myInput").focus();
+                tableData.forEach(function (item) {
+                    $(item).css("display", "table-row");
+                })
+                colorizeTable()
             });
         }
         if ($(this).val().length == 0) {
@@ -403,6 +436,7 @@ $(function () {
         var value = $(this).val().toLowerCase();
         $("#tbody tr").filter(function () {
             $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1);
+            colorizeTable()
         });
     });
 
@@ -463,6 +497,8 @@ window.setInterval(function () {
 classTime(filter(true));
 
 function filter(compDay) {
+    $(".tableDiv h5").remove();
+    document.querySelector('thead').classList.remove("hide");
     viewClicked = false;
     filterClicked = true;
     viewAll(false);
@@ -475,6 +511,8 @@ function filter(compDay) {
     if (comparedDay == "Friday") {
         tableHead.style.opacity = "0";
     } else {
+        tableData = document.querySelectorAll(".gradeX");
+        var hiddenDivCounter = 0;
         for (i = 0; i < tableData.length; i++) {
             if (tableData[i]["cells"][4].innerText == comparedDay) {
                 tableHead.classList.add("show");
@@ -482,13 +520,22 @@ function filter(compDay) {
                 ids.push(parseInt(tableData[i]["cells"][0].innerText) - 1);
             } else {
                 tableData[i].classList.add("hide");
+                hiddenDivCounter++;
             }
         }
+        if (hiddenDivCounter == tableData.length) {
+            var infoText = `<h5 class="text-center">🎉 no class availabe 🎉</h5>`;
+            $(infoText).prependTo(".tableDiv");
+            document.querySelector('thead').classList.add("hide");
+        }
+
     }
     return ids;
 }
 
 function viewAll(decision) {
+    $(".tableDiv h5").remove();
+    document.querySelector('thead').classList.remove("hide");
     tomorrowClicked = false;
     tableHead.style.opacity = "1";
     document.getElementById("input").style.display = "block";
@@ -577,6 +624,7 @@ function upcomingPainter() {
 
 function classTime(arr = []) {
     viewClicked = false;
+    tableData = document.querySelectorAll(".gradeX");
     for (let j = 0; j < arr.length; j++) {
         let differ;
         classHrMinFrmt.push(
@@ -646,7 +694,7 @@ function classTime(arr = []) {
         );
     });
 
-    // console.log('\nindex: ' + index); //we got the index of the upcoming class's table row
+    //we got the index of the upcoming class's table row
     let counter = 0;
     for (let i = 0; i < idArr.length; i++) {
         let data = tableData[idArr[i] - 1]["cells"][0].innerHTML;
